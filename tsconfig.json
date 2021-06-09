@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "outDir": "./lib",
+        "target": "ES5",
+        "module": "commonjs",
+        "lib": ["ESNext"],
+        "moduleResolution": "node",
+        "importHelpers": true
+    }
+}

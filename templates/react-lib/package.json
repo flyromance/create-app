@@ -1,0 +1,16 @@
+{
+    "name": "{{{ name}}}",
+    "version": "0.0.1",
+    "peerDependencies": {
+        "react": ">=16.8",
+        "react-dom": ">=16.8"
+    },
+    "dependencies": {
+        "react": "",
+        "classnames": "",
+        "styled-components": ""
+    },
+    "devDependencies": {
+        "@types/react": ""
+    }
+}
