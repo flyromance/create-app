@@ -85,7 +85,7 @@ export default async (option: InitOption) => {
           repoOption = repoConfigs[sourceOption.repoType];
           const arr = await getProjects({
             ...repoOption.getProjects({
-              group: sourceOption.group
+              ...sourceOption
             })
           });
           return arr.filter(sourceOption.filterProjects ?? (() => true)).map((item: any) => {

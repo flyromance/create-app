@@ -8,7 +8,7 @@ import { pkgConfig } from './config';
 export const checkNodeVersion = () => {
   if (!semver.satisfies(process.version, pkgConfig.nodeVersion)) {
     console.log(
-      chalk.red('  必须把node更新到 >=' + pkgConfig.nodeVersion + '.x 才能使用该cli工具')
+      chalk.red('  需要nodejs版本：' + pkgConfig.nodeVersion)
     );
     process.exit(1);
   }

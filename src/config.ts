@@ -4,8 +4,8 @@ export const pkgConfig = {
   name: pkg.name,
   version: pkg.version,
   binName: Object.keys(pkg.bin || {})[0],
-  registry: pkg.publishConfig?.registry || "https://registry.npmjs.org/", // 可以改成自己的
-  nodeVersion: pkg.engines?.node || process.version,
+  registry: pkg.publishConfig?.registry || 'https://registry.npmjs.org/', // 可以改成自己的
+  nodeVersion: pkg.engines?.node || process.version
 };
 
 export const repoConfigs = {
@@ -95,7 +95,10 @@ export const repoConfigs = {
     getProjects: (opts) => {
       return {
         // https://gitee.com/api/v5/swagger#/getV5UsersUsernameRepos
-        url: `https://gitee.com/api/v5/users/${opts.group}/repos?per_page=100&type=all`,
+        url:
+          opts.groupType === 'org'
+            ? `https://gitee.com/api/v5/orgs/${opts.group}/repos?per_page=100&type=all`
+            : `https://gitee.com/api/v5/users/${opts.group}/repos?per_page=100&type=all`,
         headers: {},
         filter(item) {
           return true; // gitee 无法创建子组，所以不需要过滤组
@@ -104,7 +107,7 @@ export const repoConfigs = {
           return {
             id: item.id,
             name: item.name,
-            description: item.description,
+            description: item.description
           };
         }
       };
@@ -141,12 +144,20 @@ export const sourceConfigs: any[] = [
     key: '3',
     group: 'flyromance',
     repoType: 'github',
-    filterProjects: (item) => /app-|lib-/.test(item.name),
+    filterProjects: (item) => /app-|lib-/.test(item.name)
   },
   {
-    name: 'gitee',
+    name: 'gitee-app',
     key: '4',
-    group: 'flyromance',
+    group: 'app-templates',
+    groupType: 'org',
+    repoType: 'gitee'
+  },
+  {
+    name: 'gitee-lib',
+    key: '4',
+    group: 'lib-templates',
+    groupType: 'org',
     repoType: 'gitee'
   }
 ];
