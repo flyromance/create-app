@@ -2,19 +2,28 @@
   "name": "@flyromance/create-app",
   "version": "1.0.1",
   "description": "支持从多源（gitee、github、gitlab）创建项目的cli工具",
+  "author": "flyromance",
+  "keywords": [
+    "cli",
+    "create",
+    "app",
+    "project",
+    "template"
+  ],
   "main": "lib/index.js",
   "bin": {
-    "create-app": "bin/index.js"
+    "create-app": "bin/index.js",
+    "create-project": "bin/index.js"
   },
   "files": [
     "lib"
   ],
   "scripts": {
-    "dev": "npm run build:cjs -- -w",
+    "dev": "tsc --module commonjs --outDir lib --watch",
     "build": "npm run build:cjs",
     "build:cjs": "tsc --module commonjs --outDir lib",
     "build:esm": "tsc --module esnext --outDir esm",
-    "build:types": "xxx",
+    "type-check": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -44,8 +53,6 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "engines": {
     "node": ">=10.0.0"

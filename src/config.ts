@@ -8,58 +8,8 @@ export const pkgConfig = {
   nodeVersion: pkg.engines?.node || process.version
 };
 
+// 源配置
 export const repoConfigs = {
-  ['lf-gitlab']: {
-    type: 'git',
-    getProjects: (opts) => {
-      return {
-        url: `https://git.longhu.net/groups/${opts.group}/-/children.json`,
-        headers: {},
-        filter(item) {
-          return item.type === 'project'; // group表示组，需要过滤掉
-        },
-        transform(item) {
-          return {
-            id: item.id,
-            name: item.name
-          };
-        }
-      };
-    },
-    getDownloadOption(opts) {
-      return {
-        downloadType: 'clone', // no-clone
-        cloneUrl: `https://git.longhu.net/${opts.group}/${opts.templateName}.git`, //
-        url: `https://git.longhu.net/${opts.group}/${opts.templateName}/-/archive/${opts.branch}/${opts.templateName}-${opts.branch}.zip`
-      };
-    }
-  },
-  gitlab: {
-    type: 'git',
-    getProjects: (opts) => {
-      return {
-        url: `https://gitlab.com/groups/${opts.group}/-/children.json`,
-        headers: {},
-        filter(item) {
-          return item.type === 'project';
-        },
-        transform(item) {
-          return {
-            id: item.id,
-            name: item.name,
-            description: item.description
-          };
-        }
-      };
-    },
-    getDownloadOption(opts) {
-      return {
-        downloadType: 'clone', //
-        cloneUrl: `https://gitlab.com/${opts.group}/${opts.templateName}.git`, //
-        url: `https://gitlab.com/${opts.group}/${opts.templateName}/-/archive/${opts.branch}/${opts.templateName}-${opts.branch}.zip`
-      };
-    }
-  },
   github: {
     type: 'git',
     getProjects: (opts) => {
@@ -87,6 +37,58 @@ export const repoConfigs = {
         downloadType: 'clone', //
         cloneUrl: `https://github.com/${opts.group}/${opts.templateName}.git`, //
         url: `https://github.com/${opts.group}/${opts.templateName}/archive/${opts.branch}.zip`
+      };
+    }
+  },
+
+  gitlab: {
+    type: 'git',
+    getProjects: (opts) => {
+      return {
+        url: `https://gitlab.com/groups/${opts.group}/-/children.json`,
+        headers: {},
+        filter(item) {
+          return item.type === 'project';
+        },
+        transform(item) {
+          return {
+            id: item.id,
+            name: item.name,
+            description: item.description
+          };
+        }
+      };
+    },
+    getDownloadOption(opts) {
+      return {
+        downloadType: 'clone', //
+        cloneUrl: `https://gitlab.com/${opts.group}/${opts.templateName}.git`, //
+        url: `https://gitlab.com/${opts.group}/${opts.templateName}/-/archive/${opts.branch}/${opts.templateName}-${opts.branch}.zip`
+      };
+    }
+  },
+  ['lf-gitlab']: {
+    type: 'git',
+    getProjects: (opts) => {
+      return {
+        url: `https://git.longhu.net/groups/${opts.group}/-/children.json`,
+        headers: {},
+        filter(item) {
+          return item.type === 'project'; // group表示组，需要过滤掉
+        },
+        transform(item) {
+          return {
+            id: item.id,
+            name: item.name
+          };
+        }
+      };
+    },
+    getDownloadOption(opts) {
+      return {
+        downloadType: 'clone', // no-clone
+        cloneUrl: `https://git.longhu.net/${opts.group}/${opts.templateName}.git`, //
+        url: `https://git.longhu.net/${opts.group}/${opts.templateName}/-/archive/${opts.branch}/${opts.templateName}-${opts.branch}.zip`
       };
     }
   },
@@ -122,15 +124,21 @@ export const repoConfigs = {
   }
 };
 
-// 保证name
 export const sourceConfigs: any[] = [
+  // {
+  //   name: 'lf-gitlab',
+  //   key: '1',
+  //   group: 'maia-public/templates',
+  //   repoType: 'lf-gitlab',
+  //   filterProjects: (item) => item.includes('template'),
+  //   disabled: false
+  // },
   {
-    name: 'lf-gitlab',
-    key: '1',
-    group: 'maia-public/templates',
-    repoType: 'lf-gitlab',
-    filterProjects: (item) => item.includes('template'),
-    disabled: false
+    name: 'github',
+    key: '3',
+    repoType: 'github',
+    group: 'flyromance',
+    filterProjects: (item) => /app-|lib-/.test(item.name)
   },
   {
     name: 'gitlab',
@@ -140,24 +148,17 @@ export const sourceConfigs: any[] = [
     filterProjects: () => true
   },
   {
-    name: 'github',
-    key: '3',
-    group: 'flyromance',
-    repoType: 'github',
-    filterProjects: (item) => /app-|lib-/.test(item.name)
-  },
-  {
-    name: 'gitee-app',
+    name: 'gitee-app-templates',
     key: '4',
+    repoType: 'gitee',
     group: 'app-templates',
-    groupType: 'org',
-    repoType: 'gitee'
+    groupType: 'org'
   },
   {
-    name: 'gitee-lib',
-    key: '4',
+    name: 'gitee-lib-templates',
+    key: '5',
+    repoType: 'gitee',
     group: 'lib-templates',
-    groupType: 'org',
-    repoType: 'gitee'
+    groupType: 'org'
   }
 ];

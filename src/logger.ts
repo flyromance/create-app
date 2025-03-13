@@ -24,7 +24,7 @@ export const log = (...args) => {
 export function success(...args) {
   const msg = format.apply(format, args);
   console.log(chalk.green(prefix), sep, msg);
-};
+}
 
 /**
  * Log an error `message` to the console and exit.
@@ -36,4 +36,4 @@ export function fatal(...args) {
   const msg = format.apply(format, args);
   console.error(chalk.red(prefix), sep, msg);
   process.exit(1);
-};
+}

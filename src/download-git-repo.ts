@@ -3,8 +3,8 @@
  * 1、git clone
  * 2、请求接口下载zip包，然后解压。 用download
  */
-import download from "download";
-import { spawn, spawnSync } from "child_process";
+import download from 'download';
+import { spawn, spawnSync } from 'child_process';
 import rimraf from 'rimraf';
 import * as logger from './logger';
 
@@ -27,26 +27,26 @@ import * as logger from './logger';
 // url => https://hub.fastgit.org/vuejs-templates/simple
 
 function getGitUrl(option) {
-  const { source = "longfor", username, project } = option || {};
+  const { source = 'longfor', username, project } = option || {};
   switch (source) {
-    case "github": {
+    case 'github': {
       return `https://github.com/${username}/${project}.git`;
     }
-    case "longfor": {
+    case 'longfor': {
       return `http://git.longhu.net/${username}/${project}.git`;
     }
   }
 }
 
 function getHttpUrl(option) {
-  const { source = "longfor", username, project } = option || {};
+  const { source = 'longfor', username, project } = option || {};
   switch (source) {
-    case "github": {
+    case 'github': {
       return `https://github.com/${username}/${project}`;
     }
-    case "longfor": {
-      logger.fatal("longfor git源不支持用普通方式下载工程。");
-      return "";
+    case 'longfor': {
+      logger.fatal('longfor git源不支持用普通方式下载工程。');
+      return '';
     }
   }
 }
@@ -63,38 +63,38 @@ export function gitClone(
   opts?: GitCloneOptions,
   cb?: (err) => void
 ) {
-  if (typeof opts === "function") {
+  if (typeof opts === 'function') {
     cb = opts;
     opts = {};
   }
 
   opts = opts || {};
 
-  var git = opts.git || "git";
+  var git = opts.git || 'git';
   let args: string[] = [];
 
   // clone http://git dirname
-  args.push("clone", repoUrl, targetPath);
+  args.push('clone', repoUrl, targetPath);
 
   // clone http://git dirname --depth 1
   if (opts.shallow) {
-    args.push("--depth", "1");
+    args.push('--depth', '1');
   }
 
   // clone http://git dirname --depth 1 --branch master
   if (opts.branch) {
-    args.push("--branch", opts.branch);
+    args.push('--branch', opts.branch);
   }
 
   return new Promise((resolve, reject) => {
     var process = spawn(git, args);
 
-    process.on("error", function (err) {
+    process.on('error', function (err) {
       reject(err);
       cb && cb(err);
     });
 
-    process.on("close", function (status) {
+    process.on('close', function (status) {
       if (status == 0) {
         cb && cb(null);
         resolve(void 0);
@@ -114,12 +114,12 @@ export function gitClone(
  * @param {Function} fn
  */
 export default function (dest, opts, fn) {
-  if (typeof opts === "function") {
+  if (typeof opts === 'function') {
     fn = opts;
     opts = null;
   }
   let options = Object.assign({ clone: true }, opts || {});
-  const { clone, source, username, project } = options;
+  const { clone, source, username, project, git, install } = options;
   // delete options.clone;
   // delete options.source;
 
@@ -132,35 +132,43 @@ export default function (dest, opts, fn) {
   // TODO: 目前只支持git clone方式
   if (clone) {
     var cloneOptions = {
-      branch: "branch",
-      shallow: true,
+      branch: 'branch',
+      shallow: true
     };
     const gitUrl = getGitUrl({ source, username, project });
     if (!gitUrl) {
-      logger.fatal("为找到git clone url。");
+      logger.fatal('为找到git clone url。');
     }
     gitClone(gitUrl as string, dest, cloneOptions, function (err) {
       if (!err) {
-        rimraf.sync(dest + "/.git");
+        if (!git) {
+          rimraf.sync(dest + '/.git');
+        }
         fn();
       } else {
         fn(err);
       }
     });
   } else {
-    const httpUrl = getHttpUrl({ source, username, project }) || "";
+    const httpUrl = getHttpUrl({ source, username, project }) || '';
     var downloadOptions = {
       extract: true,
       strip: 1,
-      mode: "666",
+      mode: '666',
       ...options,
       headers: {
-        accept: "application/zip",
-        ...(options.headers || {}),
-      },
+        accept: 'application/zip',
+        ...(options.headers || {})
+      }
     };
     download(httpUrl, dest, downloadOptions)
       .then(function (data) {
+        if (git) {
+          spawnSync('git', ['init'], { cwd: dest });
+        }
+        if (install) {
+          spawnSync('npm', ['install'], { cwd: dest });
+        }
         fn();
       })
       .catch(function (err) {
@@ -182,31 +190,30 @@ function normalize(repo) {
 
   if (match) {
     var url = match[2];
-    var directCheckout = match[3] || "master";
+    var directCheckout = match[3] || 'master';
 
     return {
-      type: "direct",
+      type: 'direct',
       url: url,
-      checkout: directCheckout,
+      checkout: directCheckout
     };
   } else {
-    regex =
-      /^(?:(github|gitlab|bitbucket):)?(?:(.+):)?([^/]+)\/([^#]+)(?:#(.+))?$/;
+    regex = /^(?:(github|gitlab|bitbucket):)?(?:(.+):)?([^/]+)\/([^#]+)(?:#(.+))?$/;
     match = regex.exec(repo);
     if (!match) throw new Error();
-    var type = match[1] || "github";
+    var type = match[1] || 'github';
     var origin = match[2] || null;
     var owner = match[3];
     var name = match[4];
-    var checkout = match[5] || "master";
+    var checkout = match[5] || 'master';
 
     if (origin == null) {
-      if (type === "github") {
-        origin = "github.com";
-      } else if (type === "gitlab") {
-        origin = "gitlab.com";
-      } else if (type === "bitbucket") {
-        origin = "bitbucket.org";
+      if (type === 'github') {
+        origin = 'github.com';
+      } else if (type === 'gitlab') {
+        origin = 'gitlab.com';
+      } else if (type === 'bitbucket') {
+        origin = 'bitbucket.org';
       }
     }
 
@@ -215,7 +222,7 @@ function normalize(repo) {
       origin: origin,
       owner: owner,
       name: name,
-      checkout: checkout,
+      checkout: checkout
     };
   }
 }
@@ -229,9 +236,9 @@ function normalize(repo) {
 function addProtocol(origin, clone) {
   if (!/^(f|ht)tps?:\/\//i.test(origin)) {
     if (clone) {
-      origin = "git@" + origin;
+      origin = 'git@' + origin;
     } else {
-      origin = "https://" + origin;
+      origin = 'https://' + origin;
     }
   }
 
@@ -250,41 +257,21 @@ function getUrl(repo, clone) {
   // Get origin with protocol and add trailing slash or colon (for ssh)
   var origin = addProtocol(repo.origin, clone);
   if (/^git@/i.test(origin)) {
-    origin = origin + ":";
+    origin = origin + ':';
   } else {
-    origin = origin + "/";
+    origin = origin + '/';
   }
 
   // Build url
   if (clone) {
-    url = origin + repo.owner + "/" + repo.name + ".git";
+    url = origin + repo.owner + '/' + repo.name + '.git';
   } else {
-    if (repo.type === "github") {
-      url =
-        origin +
-        repo.owner +
-        "/" +
-        repo.name +
-        "/archive/" +
-        repo.checkout +
-        ".zip";
-    } else if (repo.type === "gitlab") {
-      url =
-        origin +
-        repo.owner +
-        "/" +
-        repo.name +
-        "/repository/archive.zip?ref=" +
-        repo.checkout;
-    } else if (repo.type === "bitbucket") {
-      url =
-        origin +
-        repo.owner +
-        "/" +
-        repo.name +
-        "/get/" +
-        repo.checkout +
-        ".zip";
+    if (repo.type === 'github') {
+      url = origin + repo.owner + '/' + repo.name + '/archive/' + repo.checkout + '.zip';
+    } else if (repo.type === 'gitlab') {
+      url = origin + repo.owner + '/' + repo.name + '/repository/archive.zip?ref=' + repo.checkout;
+    } else if (repo.type === 'bitbucket') {
+      url = origin + repo.owner + '/' + repo.name + '/get/' + repo.checkout + '.zip';
     }
   }
 

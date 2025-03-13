@@ -7,9 +7,7 @@ import { pkgConfig } from './config';
 
 export const checkNodeVersion = () => {
   if (!semver.satisfies(process.version, pkgConfig.nodeVersion)) {
-    console.log(
-      chalk.red('  需要nodejs版本：' + pkgConfig.nodeVersion)
-    );
+    console.log(chalk.red('  需要nodejs版本：' + pkgConfig.nodeVersion));
     process.exit(1);
   }
 };
