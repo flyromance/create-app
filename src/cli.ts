@@ -35,7 +35,7 @@ function parseArgv() {
   }
 
   const { _, version, help, git, install, ...restOpts } = parseArgv();
-  console.log(restOpts);
+  // console.log(restOpts);
 
   if (version) {
     console.log(chalk.yellow(`  ${pkgConfig.name}: ${pkgConfig.version}`));
