@@ -62,6 +62,6 @@ function parseArgv() {
     opts.projectName = _[0];
   }
 
-  console.log(opts);
+  // console.log(opts);
   await requireDefault(require('./create'))(opts);
 })();

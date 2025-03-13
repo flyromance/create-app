@@ -1,6 +1,6 @@
 {
   "name": "@flyromance/create-app",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "支持从多源（gitee、github、gitlab）创建项目的cli工具",
   "author": "flyromance",
   "keywords": [
